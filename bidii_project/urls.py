@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from construction.views import favicon
 
 # Swagger/OpenAPI documentation setup
 schema_view = get_schema_view(
@@ -50,6 +51,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('construction.urls')),
+    path('favicon.ico', favicon, name='favicon'),
     
     # Swagger documentation
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

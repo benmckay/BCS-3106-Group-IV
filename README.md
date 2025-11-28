@@ -75,7 +75,7 @@ SWE-II-proj/
 
 ### Step 1: Clone the Repository
 ```bash
-cd /home/cyrus/Desktop/code/web/django/SWE-II-proj
+cd Users\benjamin.karanja\Projects\BCS-3106-Group-IV 
 ```
 
 ### Step 2: Create Virtual Environment

@@ -61,17 +61,57 @@ class CustomerSerializer(serializers.ModelSerializer):
 class WorkerSerializer(serializers.ModelSerializer):
     """Serializer for Worker model"""
     user = UserSerializer(read_only=True)
-    user_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), 
-        source='user', 
-        write_only=True
-    )
+    first_name = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    last_name = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    username = serializers.CharField(write_only=True, required=False)
+    email = serializers.EmailField(write_only=True, required=False, allow_blank=True)
     worker_type_display = serializers.CharField(source='get_worker_type_display', read_only=True)
     
     class Meta:
         model = Worker
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        fields = [
+            'id', 'user', 'first_name', 'last_name', 'username', 'email',
+            'worker_type', 'worker_type_display', 'phone', 'hourly_rate',
+            'experience_years', 'is_available', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at', 'user', 'worker_type_display']
+    
+    def validate(self, attrs):
+        if not self.instance:
+            required_fields = ['first_name', 'last_name', 'username']
+            missing = [field for field in required_fields if not attrs.get(field)]
+            if missing:
+                raise serializers.ValidationError({field: 'This field is required.' for field in missing})
+            username = attrs.get('username')
+            email = attrs.get('email')
+            if username and User.objects.filter(username=username).exists():
+                raise serializers.ValidationError({'username': 'Username already exists.'})
+            if email and User.objects.filter(email__iexact=email).exists():
+                raise serializers.ValidationError({'email': 'Email already exists.'})
+        return attrs
+    
+    def create(self, validated_data):
+        first_name = validated_data.pop('first_name')
+        last_name = validated_data.pop('last_name')
+        username = validated_data.pop('username')
+        email = validated_data.pop('email', '')
+        password = User.objects.make_random_password()
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            password=password
+        )
+        validated_data['user'] = user
+        return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        validated_data.pop('first_name', None)
+        validated_data.pop('last_name', None)
+        validated_data.pop('username', None)
+        validated_data.pop('email', None)
+        return super().update(instance, validated_data)
 
 
 class EstimateSerializer(serializers.ModelSerializer):
@@ -260,4 +300,11 @@ class CustomerDetailSerializer(CustomerSerializer):
     estimates = EstimateSerializer(many=True, read_only=True)
     jobs = JobSerializer(many=True, read_only=True)
     invoices = InvoiceSerializer(many=True, read_only=True)
+
+
+class MaterialCostSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    supplier = serializers.CharField(allow_null=True)
+    total_cost = serializers.DecimalField(max_digits=18, decimal_places=2)
 

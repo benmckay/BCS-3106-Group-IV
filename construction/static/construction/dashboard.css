@@ -1,0 +1,445 @@
+:root {
+  --chart-min-height: 420px;
+  --chart-min-height-md: 360px;
+  --chart-min-height-sm: 280px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #1b5e20, #041407);
+  color: #e6ffe8;
+  min-height: 100vh;
+}
+
+.dashboard-shell {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.dashboard-header h1 {
+  font-size: 2.25rem;
+}
+
+.dashboard-header p {
+  color: #bde5c8;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+#refresh-btn {
+  background: #2e7d32;
+  color: #fff;
+  padding: 12px 20px;
+}
+
+.export-group {
+  display: flex;
+  gap: 8px;
+}
+
+.export-group button {
+  background: #0f2d1c;
+  color: #a5d6a7;
+  padding: 12px 16px;
+  border: 1px solid rgba(165, 214, 167, 0.3);
+}
+
+.status-strip {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #bde5c8;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: rgba(4, 20, 7, 0.8);
+  border: 1px solid rgba(165, 214, 167, 0.2);
+  padding: 18px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.2), rgba(27, 94, 32, 0.05));
+  opacity: 0.6;
+}
+
+.stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.stat-card p {
+  font-size: 0.9rem;
+  color: #a5d6a7;
+}
+
+.stat-card .value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.stat-card .subvalue {
+  font-size: 0.85rem;
+  color: #7bd48c;
+}
+
+.secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.insight-card {
+  background: #0f2d1c;
+  border-radius: 16px;
+  padding: 18px;
+  border: 1px solid rgba(165, 214, 167, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insight-card h4 {
+  font-weight: 600;
+  color: #a5d6a7;
+}
+
+.insight-card .metric {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tab {
+  background: rgba(15, 45, 28, 0.6);
+  color: #a5d6a7;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.tab.active {
+  background: #2e7d32;
+  color: #fff;
+  border-color: #3ba34a;
+}
+
+.tab-panels {
+  background: rgba(4, 20, 7, 0.85);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid rgba(165, 214, 167, 0.1);
+}
+
+.tab-panel {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tab-panel.active {
+  display: flex;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.chart-card {
+  background: #0f2d1c;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(165, 214, 167, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: var(--chart-min-height);
+}
+
+.chart-card[data-chart="worker_productivity"],
+.chart-card[data-chart="worker_distribution"],
+.chart-card[data-chart="revenue_trend"],
+.chart-card[data-chart="materials_cost"],
+.chart-card[data-chart="worker_costs"] {
+  min-height: var(--chart-min-height);
+  grid-column: auto;
+}
+
+.chart-card img {
+  width: 100%;
+  height: auto;
+  min-height: 180px;
+  max-height: 480px;
+  display: block;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  object-fit: contain;
+}
+
+.chart-card[data-chart="materials_cost"] .chart-meta {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.materials-meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #a5d6a7;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.materials-meta-total {
+  font-weight: 600;
+  color: #e6ffe8;
+}
+
+.materials-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+}
+
+.materials-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.materials-list .material-name {
+  flex: 1;
+  font-weight: 600;
+  color: #e6ffe8;
+}
+
+.materials-list .material-meta {
+  font-size: 0.8rem;
+  color: #a5d6a7;
+  white-space: nowrap;
+}
+
+.materials-list .material-cost {
+  font-weight: 700;
+  color: #7bd48c;
+}
+
+.materials-list .materials-empty {
+  justify-content: center;
+  color: #a5d6a7;
+  font-style: italic;
+}
+
+.chart-card .chart-fallback {
+  min-height: 180px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #a5d6a7;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 12px;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 1024px) {
+  .chart-card[data-chart="worker_productivity"],
+  .chart-card[data-chart="worker_distribution"],
+  .chart-card[data-chart="revenue_trend"],
+  .chart-card[data-chart="materials_cost"],
+  .chart-card[data-chart="worker_costs"] {
+    min-height: var(--chart-min-height-md);
+    grid-column: auto;
+  }
+
+  .chart-card img {
+    max-height: 360px;
+  }
+
+  .chart-card .chart-fallback {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-card {
+    min-height: var(--chart-min-height-sm);
+  }
+
+  .chart-card img {
+    max-height: 360px;
+  }
+}
+
+.activity-panel {
+  background: #0f2d1c;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(165, 214, 167, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activity-panel h2 {
+  font-size: 1.2rem;
+}
+
+#activity-feed {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#activity-feed li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.badge {
+  background: #1b5e20;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #c62828;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 100;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none !important;
+}
+
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 20, 7, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  z-index: 90;
+  color: #fff;
+  font-weight: 600;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #66bb6a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-card {
+    min-height: 280px;
+  }
+}

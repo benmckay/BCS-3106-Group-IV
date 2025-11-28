@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A dashboard that provides live visibility into the operations of a construction company."
+    />
+    <meta property="og:title" content="Construction Intelligence Dashboard" />
+    <meta
+      property="og:description"
+      content="A dashboard that provides live visibility into the operations of a construction company."
+    />
+    <meta
+      property="og:image"
+      content="https://www.bidii.com/wp-content/uploads/2019/07/Bidii-logo.png"
+    />
+    <title>Construction Intelligence Dashboard</title>
+    <link rel="stylesheet" href="{% static 'construction/dashboard.css' %}" />
+  </head>
+  <body>
+    <div class="dashboard-shell">
+      <header class="dashboard-header">
+        <div>
+          <h1>Operations Intelligence</h1>
+          <p>Live visibility for Bidii Quality Builders</p>
+        </div>
+        <div class="header-actions">
+          <button id="refresh-btn">Refresh</button>
+          <div class="export-group">
+            <button data-format="pdf">Export PDF</button>
+            <button data-format="excel">Export Excel</button>
+          </div>
+        </div>
+      </header>
+      <div class="status-strip">
+        <span>Last refreshed</span>
+        <strong id="last-refresh">--</strong>
+      </div>
+      <section class="stats-grid">
+        <div class="stat-card" data-key="active_jobs">
+          <p>Active Jobs</p>
+          <div class="value">0</div>
+        </div>
+        <div class="stat-card" data-key="scheduled_jobs">
+          <p>Scheduled Jobs</p>
+          <div class="value">0</div>
+        </div>
+        <div class="stat-card" data-key="completed_jobs">
+          <p>Completed Jobs</p>
+          <div class="value">0</div>
+        </div>
+        <div class="stat-card" data-key="pending_estimates">
+          <p>Pending Estimates</p>
+          <div class="value">0</div>
+          <div class="subvalue">
+            Accepted <span data-secondary="accepted_estimates">0</span>
+          </div>
+        </div>
+        <div class="stat-card" data-key="paid_invoices">
+          <p>Paid Invoices</p>
+          <div class="value">0</div>
+        </div>
+        <div class="stat-card" data-key="overdue_invoices">
+          <p>Overdue Invoices</p>
+          <div class="value">0</div>
+        </div>
+        <div class="stat-card" data-key="total_revenue" data-prefix="$">
+          <p>Total Revenue</p>
+          <div class="value">$0</div>
+        </div>
+        <div class="stat-card" data-key="pending_revenue" data-prefix="$">
+          <p>Pending Revenue</p>
+          <div class="value">$0</div>
+        </div>
+      </section>
+      <section class="secondary-grid">
+        <div class="insight-card">
+          <h4>Worker Availability</h4>
+          <div id="worker-availability" class="metric">0%</div>
+          <small id="worker-breakdown">0 of 0 workers available</small>
+        </div>
+        <div class="insight-card">
+          <h4>Material Spend</h4>
+          <div id="material-spend" class="metric">$0</div>
+        </div>
+        <div class="insight-card">
+          <h4>Average Job Duration</h4>
+          <div id="avg-duration" class="metric">0 days</div>
+        </div>
+        <div class="insight-card">
+          <h4>Customer Satisfaction</h4>
+          <div id="customer-satisfaction" class="metric">0%</div>
+        </div>
+      </section>
+      <div class="tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="financial">Financial</button>
+        <button class="tab" data-tab="workforce">Workforce</button>
+        <button class="tab" data-tab="performance">Performance</button>
+      </div>
+      <section class="tab-panels">
+        <div class="tab-panel active" data-panel="overview">
+          <div class="chart-grid">
+            <div class="chart-card" data-chart="job_status">
+              <div class="chart-title">Job Status Distribution</div>
+              <img alt="Job status distribution" />
+            </div>
+            <div class="chart-card" data-chart="invoice_status">
+              <div class="chart-title">Invoice Status Distribution</div>
+              <img alt="Invoice status distribution" />
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="financial">
+          <div class="chart-grid">
+            <div class="chart-card" data-chart="revenue_trend">
+              <div class="chart-title">Revenue Trend</div>
+              <img alt="Revenue trend" />
+            </div>
+            <div class="chart-card" data-chart="materials_cost">
+              <div class="chart-title">Top Materials by Cost</div>
+              <img alt="Material costs" />
+              <div class="chart-meta">
+                <div class="materials-meta-header">
+                  <span>Top Purchases</span>
+                  <span id="materials-sum" class="materials-meta-total"
+                    >$0</span
+                  >
+                </div>
+                <ul id="materials-list" class="materials-list">
+                  <li class="materials-empty">
+                    No material purchases recorded
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="chart-card" data-chart="worker_costs">
+              <div class="chart-title">Cost Breakdown by Worker Type</div>
+              <img alt="Worker cost breakdown" />
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="workforce">
+          <div class="chart-grid">
+            <div class="chart-card" data-chart="worker_distribution">
+              <div class="chart-title">Worker Type Distribution</div>
+              <img alt="Worker distribution" />
+            </div>
+            <div class="chart-card" data-chart="worker_productivity">
+              <div class="chart-title">Worker Productivity Metrics</div>
+              <img alt="Worker productivity" />
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="performance">
+          <div class="chart-grid">
+            <div class="chart-card" data-chart="monthly_completion">
+              <div class="chart-title">Monthly Job Completion Rate</div>
+              <img alt="Monthly job completion" />
+            </div>
+            <div class="chart-card" data-chart="customer_completion">
+              <div class="chart-title">Customer Completion Rates</div>
+              <img alt="Customer completion" />
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="activity-panel">
+        <div class="activity-header">
+          <h2>Recent Activity</h2>
+        </div>
+        <ul id="activity-feed"></ul>
+      </section>
+    </div>
+    <div id="toast" class="toast hidden"></div>
+    <div id="loading-overlay" class="hidden">
+      <div class="spinner"></div>
+      <p>Syncing insights...</p>
+    </div>
+    <script src="{% static 'construction/dashboard.js' %}" defer></script>
+  </body>
+</html>

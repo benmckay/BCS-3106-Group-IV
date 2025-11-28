@@ -7,7 +7,8 @@ from .views import (
     JobViewSet, SupplierViewSet, MaterialViewSet,
     InvoiceViewSet, PaymentViewSet,
     register_user, current_user,
-    dashboard_stats, dashboard_charts, reports
+    dashboard_view, dashboard_stats, dashboard_charts, export_dashboard, reports,
+    TopMaterialsByCost
 )
 
 # Create a router and register our viewsets
@@ -29,9 +30,12 @@ urlpatterns = [
     path('auth/user/', current_user, name='current_user'),
     
     # Dashboard endpoints
-    path('dashboard/stats/', dashboard_stats, name='dashboard_stats'),
-    path('dashboard/charts/', dashboard_charts, name='dashboard_charts'),
+    path('dashboard/', dashboard_view, name='dashboard'),
+    path('dashboard-stats/', dashboard_stats, name='dashboard_stats'),
+    path('dashboard-charts/', dashboard_charts, name='dashboard_charts'),
+    path('export-dashboard/', export_dashboard, name='export_dashboard'),
     path('reports/', reports, name='reports'),
+    path('materials/top-by-cost/', TopMaterialsByCost.as_view(), name='materials-top-by-cost'),
     
     # Include router URLs
     path('', include(router.urls)),
